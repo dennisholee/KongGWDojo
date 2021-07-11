@@ -1,0 +1,42 @@
+- hosts: nodes
+  become: yes
+  tasks:
+
+  - name: Add the service account 'kong'
+    user:
+      name: kong
+      comment: kong gateway service account
+      group: kong
+      system: yes
+
+  - name: install curl lsb-release net-tools
+    apt:
+      pkg:
+      - curl
+      - lsb-release
+      - net-tools
+      update_cache: yes
+
+  - name: Copy kong.list file with owner and permissions
+    ansible.builtin.copy:
+      src: kong.list
+      dest: /etc/apt/sources.list.d/kong.list
+      mode: '0644'
+
+  - name: install kong
+    apt:
+      pkg:
+      - kong
+      update_cache: yes
+      
+  - name: Copy kong.conf 
+    ansible.builtin.copy:
+      src: kong.conf
+      dest: /etc/kong/kong.conf
+      mode: '0644'
+
+  - name: Copy kong.yml 
+    ansible.builtin.copy:
+      src: kong.yml
+      dest: /home/kong/kong.yml
+      mode: '0644'
