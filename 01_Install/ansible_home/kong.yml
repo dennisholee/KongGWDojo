@@ -39,6 +39,17 @@ _transform: true
 # - name: another-service
 #   url: https://example.org
 
+services:
+- name: xrp-service
+  url: http://${xrpapi-host}:8081
+  routes:
+  - name: xrp-route
+    tags:
+    - xrp-wallets
+    paths:
+    - /wallets
+    strip_path: false
+
 # routes:
 # - name: another-route
 #   # Relationships can also be specified between top-level entities,
@@ -77,3 +88,9 @@ _transform: true
 #   - extra_limits
 #   - my_tag
 
+plugins:
+- name: rate-limiting
+  service: xrp-service
+  config:
+    minute: 5
+    policy: local
